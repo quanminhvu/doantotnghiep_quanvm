@@ -23,6 +23,14 @@ public class ApiResponse<T> {
   public static <T> ApiResponse<T> of(int statusCode, String message, T data) {
     return ApiResponse.<T>builder().statusCode(statusCode).message(message).data(data).build();
   }
+
+  public static <T> ApiResponse<T> error(int statusCode, String message) {
+    return ApiResponse.<T>builder().statusCode(statusCode).message(message).data(null).build();
+  }
+
+  public static <T> ApiResponse<T> error(int statusCode, String message, T errorDetails) {
+    return ApiResponse.<T>builder().statusCode(statusCode).message(message).data(errorDetails).build();
+  }
 }
 
 

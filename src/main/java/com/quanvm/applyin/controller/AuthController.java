@@ -1,14 +1,18 @@
 package com.quanvm.applyin.controller;
 
+import com.quanvm.applyin.dto.ApiResponse;
 import com.quanvm.applyin.dto.AuthDtos.ForgotPasswordRequest;
 import com.quanvm.applyin.dto.AuthDtos.JwtResponse;
 import com.quanvm.applyin.dto.AuthDtos.LoginRequest;
+import com.quanvm.applyin.dto.AuthDtos.LogoutRequest;
 import com.quanvm.applyin.dto.AuthDtos.RegisterRequest;
 import com.quanvm.applyin.dto.AuthDtos.ResetPasswordRequest;
+import com.quanvm.applyin.dto.AuthDtos.VerifyOtpRequest;
 import com.quanvm.applyin.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,26 +26,82 @@ public class AuthController {
   private final AuthService authService;
 
   @PostMapping("/register")
-  public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
-    authService.register(request);
-    return ResponseEntity.ok().build();
+  public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody RegisterRequest request) {
+    try {
+      authService.register(request);
+      return ResponseEntity.ok(ApiResponse.ok("Đăng ký thành công", null));
+    } catch (Exception e) {
+      // Exception sẽ được xử lý bởi GlobalExceptionHandler
+      throw e;
+    }
   }
 
   @PostMapping("/login")
-  public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest request) {
-    return ResponseEntity.ok(authService.login(request));
+  public ResponseEntity<ApiResponse<JwtResponse>> login(@Valid @RequestBody LoginRequest request) {
+    try {
+      JwtResponse data = authService.login(request);
+      return ResponseEntity.ok(ApiResponse.ok("Đăng nhập thành công", data));
+    } catch (Exception e) {
+      // Exception sẽ được xử lý bởi GlobalExceptionHandler
+      throw e;
+    }
   }
 
   @PostMapping("/forgot-password")
-  public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-    authService.forgotPassword(request);
-    return ResponseEntity.ok().build();
+  public ResponseEntity<ApiResponse<Void>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+    try {
+      authService.forgotPassword(request);
+      return ResponseEntity.ok(ApiResponse.ok("Mã reset đã được gửi đến email của bạn", null));
+    } catch (Exception e) {
+      // Exception sẽ được xử lý bởi GlobalExceptionHandler
+      throw e;
+    }
+  }
+
+  @PostMapping("/verify-otp")
+  public ResponseEntity<ApiResponse<Void>> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
+    try {
+      authService.verifyOtp(request);
+      return ResponseEntity.ok(ApiResponse.ok("Xác thực OTP thành công", null));
+    } catch (Exception e) {
+      // Exception sẽ được xử lý bởi GlobalExceptionHandler
+      throw e;
+    }
   }
 
   @PostMapping("/reset-password")
-  public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-    authService.resetPassword(request);
-    return ResponseEntity.ok().build();
+  public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+    try {
+      authService.resetPassword(request);
+      return ResponseEntity.ok(ApiResponse.ok("Mật khẩu đã được đặt lại thành công", null));
+    } catch (Exception e) {
+      // Exception sẽ được xử lý bởi GlobalExceptionHandler
+      throw e;
+    }
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<ApiResponse<Void>> logout(@Valid @RequestBody LogoutRequest request, Authentication authentication) {
+    try {
+      String userEmail = authentication.getName();
+      authService.logout(request, userEmail);
+      return ResponseEntity.ok(ApiResponse.ok("Đăng xuất thành công", null));
+    } catch (Exception e) {
+      // Exception sẽ được xử lý bởi GlobalExceptionHandler
+      throw e;
+    }
+  }
+
+  @PostMapping("/logout-all")
+  public ResponseEntity<ApiResponse<Void>> logoutAll(Authentication authentication) {
+    try {
+      String userEmail = authentication.getName();
+      authService.logoutAllDevices(userEmail);
+      return ResponseEntity.ok(ApiResponse.ok("Đăng xuất tất cả thiết bị xthành công", null));
+    } catch (Exception e) {
+      // Exception sẽ được xử lý bởi GlobalExceptionHandler
+      throw e;
+    }
   }
 }
 

@@ -45,6 +45,20 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.of(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null));
     }
 
+    @ExceptionHandler(OtpExpiredException.class)
+    public ResponseEntity<ApiResponse<Object>> handleOtpExpiredException(OtpExpiredException ex) {
+        log.error("OtpExpiredException: {}", ex.getMessage(), ex);
+        return ResponseEntity.badRequest()
+                .body(ApiResponse.of(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(OtpNotVerifiedException.class)
+    public ResponseEntity<ApiResponse<Object>> handleOtpNotVerifiedException(OtpNotVerifiedException ex) {
+        log.error("OtpNotVerifiedException: {}", ex.getMessage(), ex);
+        return ResponseEntity.badRequest()
+                .body(ApiResponse.of(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null));
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse<Object>> handleBadCredentialsException(BadCredentialsException ex) {
         log.error("BadCredentialsException: {}", ex.getMessage(), ex);
