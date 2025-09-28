@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mã OTP - ApplyIn</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .message {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        .otp-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .otp-code {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            padding: 20px 30px;
+            border-radius: 8px;
+            letter-spacing: 8px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            margin: 20px 0;
+        }
+        .otp-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        .warning-icon {
+            font-size: 18px;
+            margin-right: 8px;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        .footer p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .security-note {
+            background: #e8f4fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .security-note p {
+            margin: 0;
+            color: #1976D2;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 ApplyIn</h1>
+            <p>Mã xác thực OTP</p>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">Xin chào <strong>Nguyễn Văn A</strong>,</div>
+            
+            <div class="message">
+                Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản ApplyIn của mình. 
+                Để hoàn tất quá trình này, vui lòng sử dụng mã OTP bên dưới:
+            </div>
+            
+            <div class="otp-container">
+                <div class="otp-label">Mã OTP của bạn:</div>
+                <div class="otp-code">123456</div>
+            </div>
+            
+            <div class="warning">
+                <span class="warning-icon">⚠️</span>
+                <strong>Lưu ý quan trọng:</strong> Mã này sẽ hết hạn sau <strong>5 phút</strong> 
+                và chỉ có thể sử dụng <strong>một lần duy nhất</strong>.
+            </div>
+            
+            <div class="security-note">
+                <p><strong>🛡️ Bảo mật:</strong> Nếu bạn không yêu cầu đặt lại mật khẩu, 
+                vui lòng bỏ qua email này và kiểm tra tài khoản của bạn.</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Đội ngũ ApplyIn</strong></p>
+            <p>Hệ thống quản lý ứng tuyển việc làm</p>
+            <p>Email này được gửi tự động, vui lòng không trả lời.</p>
+        </div>
+    </div>
+</body>
+</html>
