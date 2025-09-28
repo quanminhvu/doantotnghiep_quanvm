@@ -4,7 +4,7 @@ import com.quanvm.applyin.dto.ApiResponse;
 import com.quanvm.applyin.dto.AuthDtos.ForgotPasswordRequest;
 import com.quanvm.applyin.dto.AuthDtos.JwtResponse;
 import com.quanvm.applyin.dto.AuthDtos.LoginRequest;
-import com.quanvm.applyin.dto.AuthDtos.LogoutRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import com.quanvm.applyin.dto.AuthDtos.RegisterRequest;
 import com.quanvm.applyin.dto.AuthDtos.ResetPasswordRequest;
 import com.quanvm.applyin.dto.AuthDtos.VerifyOtpRequest;
@@ -81,7 +81,7 @@ public class AuthController {
   }
 
   @PostMapping("/logout")
-  public ResponseEntity<ApiResponse<Void>> logout(@Valid @RequestBody LogoutRequest request, Authentication authentication) {
+  public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request, Authentication authentication) {
     try {
       String userEmail = authentication.getName();
       authService.logout(request, userEmail);

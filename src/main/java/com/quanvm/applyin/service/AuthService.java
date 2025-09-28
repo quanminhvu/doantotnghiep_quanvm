@@ -9,6 +9,7 @@ import com.quanvm.applyin.repository.UserRepository;
 import com.quanvm.applyin.security.JwtService;
 import com.quanvm.applyin.util.constant.UserEnum;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -81,10 +82,12 @@ public class AuthService {
     }
     
     User user = userRepository.findByEmail(request.email()).orElseThrow();
-    String token = jwtService.generateToken(request.email(), Map.of());
     
     // Xử lý device information
     Device device = handleDeviceLogin(user, request);
+    
+    // Tạo JWT token với deviceId trong claims
+    String token = jwtService.generateToken(request.email(), Map.of("deviceId", device.getDeviceId()));
     
     // Tạo DeviceInfo cho response
     DeviceInfo deviceInfo = new DeviceInfo(
@@ -290,9 +293,22 @@ public class AuthService {
   }
 
   @Transactional
-  public void logout(LogoutRequest request, String userEmail) {
+  public void logout(HttpServletRequest request, String userEmail) {
+    // Extract JWT token from Authorization header
+    String authHeader = request.getHeader("Authorization");
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      throw new IllegalArgumentException("Token không hợp lệ");
+    }
+    
+    String token = authHeader.substring(7);
+    String deviceId = jwtService.extractDeviceId(token);
+    
+    if (deviceId == null || deviceId.isEmpty()) {
+      throw new IllegalArgumentException("Không thể xác định thiết bị từ token");
+    }
+    
     User user = getUserByEmail(userEmail);
-    Device device = deviceRepository.findByUserAndDeviceId(user, request.deviceId())
+    Device device = deviceRepository.findByUserAndDeviceId(user, deviceId)
         .orElseThrow(() -> new IllegalArgumentException("Thiết bị không tồn tại"));
     
     deactivateDevice(device);

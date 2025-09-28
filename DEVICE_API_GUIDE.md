@@ -50,7 +50,7 @@ API này hỗ trợ quản lý thiết bị và đăng xuất cho hệ thống A
 }
 ```
 
-### 2. Đăng xuất từ thiết bị cụ thể
+### 2. Đăng xuất từ thiết bị hiện tại
 **POST** `/api/auth/logout`
 
 **Headers:**
@@ -59,10 +59,8 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Request Body:**
-```json
-{
-  "deviceId": "device-unique-id-123"
-}
+```
+Không cần request body. API sẽ tự động xác định thiết bị cần đăng xuất từ JWT token.
 ```
 
 **Response Success (200):**
@@ -73,6 +71,11 @@ Authorization: Bearer <jwt-token>
   "data": null
 }
 ```
+
+**Lưu ý:**
+- API sẽ tự động lấy thông tin thiết bị từ JWT token trong Authorization header
+- Chỉ thiết bị hiện tại (thiết bị đã đăng nhập và tạo ra token) sẽ được đăng xuất
+- Không cần truyền deviceId trong request body
 
 ### 3. Đăng xuất từ tất cả thiết bị
 **POST** `/api/auth/logout-all`
