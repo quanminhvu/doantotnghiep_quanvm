@@ -97,7 +97,7 @@ public class AuthController {
     try {
       String userEmail = authentication.getName();
       authService.logoutAllDevices(userEmail);
-      return ResponseEntity.ok(ApiResponse.ok("Đăng xuất tất cả thiết bị xthành công", null));
+      return ResponseEntity.ok(ApiResponse.ok("Đăng xuất tất cả thiết bị thành công", null));
     } catch (Exception e) {
       // Exception sẽ được xử lý bởi GlobalExceptionHandler
       throw e;

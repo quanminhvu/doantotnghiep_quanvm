@@ -4,11 +4,15 @@ import com.quanvm.applyin.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,6 +81,27 @@ public class GlobalExceptionHandler {
         });
         return ResponseEntity.badRequest()
                 .body(ApiResponse.of(HttpStatus.BAD_REQUEST.value(), "Dữ liệu không hợp lệ", errors));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Object>> handleAccessDeniedException(AccessDeniedException ex) {
+        log.error("AccessDeniedException: {}", ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiResponse.of(HttpStatus.FORBIDDEN.value(), "Bạn không có quyền truy cập tài nguyên này", null));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        log.error("MaxUploadSizeExceededException: {}", ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                .body(ApiResponse.of(HttpStatus.PAYLOAD_TOO_LARGE.value(), "File upload quá lớn. Vui lòng chọn file nhỏ hơn.", null));
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIOException(IOException ex) {
+        log.error("IOException: {}", ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.of(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lỗi xử lý file. Vui lòng thử lại.", null));
     }
 
     @ExceptionHandler(Exception.class)

@@ -1,5 +1,6 @@
 package com.quanvm.applyin.controller;
 
+import com.quanvm.applyin.dto.ApiResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,12 +10,15 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/upload")
 public class UploadController {
 
   private final S3Client s3Client;
+  
+  public record UploadResponse(String fileName, String fileUrl, long fileSize) {}
 
   @Value("${r2.bucket}")
   private String bucket;
@@ -30,22 +34,46 @@ public class UploadController {
   }
 
   @PostMapping
-  public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+  public ResponseEntity<ApiResponse<UploadResponse>> uploadFile(@RequestParam("file") MultipartFile file) {
     try {
+      if (file.isEmpty()) {
+        return ResponseEntity.badRequest()
+            .body(ApiResponse.error(400, "File không được để trống"));
+      }
+
+      // Tạo tên file unique để tránh conflict
+      String originalFileName = file.getOriginalFilename();
+      String fileExtension = originalFileName != null && originalFileName.contains(".") 
+          ? originalFileName.substring(originalFileName.lastIndexOf("."))
+          : "";
+      String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
+
       s3Client.putObject(
           PutObjectRequest.builder()
               .bucket(bucket)
-              .key(file.getOriginalFilename())
+              .key(uniqueFileName)
+              .contentType(file.getContentType())
               .build(),
           RequestBody.fromBytes(file.getBytes())
       );
 
-      String publicUrl = publicBaseUrl + "/" + file.getOriginalFilename();
+      String publicUrl = publicBaseUrl + "/" + uniqueFileName;
+      UploadResponse uploadResponse = new UploadResponse(
+          originalFileName, 
+          publicUrl, 
+          file.getSize()
+      );
 
-      return ResponseEntity.ok("Upload thành công! URL: " + publicUrl);
+      return ResponseEntity.ok(
+          ApiResponse.ok("Upload thành công", uploadResponse)
+      );
 
     } catch (IOException e) {
-      return ResponseEntity.status(500).body("Lỗi upload: " + e.getMessage());
+      return ResponseEntity.status(500)
+          .body(ApiResponse.error(500, "Lỗi upload: " + e.getMessage()));
+    } catch (Exception e) {
+      return ResponseEntity.status(500)
+          .body(ApiResponse.error(500, "Lỗi hệ thống: " + e.getMessage()));
     }
   }
 }
