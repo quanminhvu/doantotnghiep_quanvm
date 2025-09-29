@@ -5,6 +5,10 @@ security:
     expirationMs: ${JWT_EXPIRATION_MS:3600000}
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/applyin}
     username: ${DB_USERNAME:postgres}
@@ -32,3 +36,9 @@ spring:
           connectiontimeout: 5000
           timeout: 3000
           writetimeout: 5000
+r2:
+  endpoint: https://5d4819de7a772f5f242f4bf25607a485.r2.cloudflarestorage.com
+  bucket: applyin
+  accessKey: d84268a1a9794e478a9661b24ae5f361
+  secretKey: 1776d58ac99b56781b134204303595c543f181581405915237e356fca6682df9
+  publicBaseUrl: https://pub-ef123f45210b4bcb9ae39d76b2685847.r2.dev
