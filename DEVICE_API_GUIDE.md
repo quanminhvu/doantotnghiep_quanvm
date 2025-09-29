@@ -50,7 +50,7 @@ API này hỗ trợ quản lý thiết bị và đăng xuất cho hệ thống A
 }
 ```
 
-### 2. Đăng xuất từ thiết bị hiện tại
+### 2. Đăng xuất từ thiết bị cụ thể
 **POST** `/api/auth/logout`
 
 **Headers:**
@@ -59,8 +59,11 @@ Authorization: Bearer <jwt-token>
 ```
 
 **Request Body:**
-```
-Không cần request body. API sẽ tự động xác định thiết bị cần đăng xuất từ JWT token.
+```json
+{
+  "deviceId": "device-unique-id-123",
+  "deviceToken": "fcm-token-for-push-notification"
+}
 ```
 
 **Response Success (200):**
@@ -71,11 +74,6 @@ Không cần request body. API sẽ tự động xác định thiết bị cần
   "data": null
 }
 ```
-
-**Lưu ý:**
-- API sẽ tự động lấy thông tin thiết bị từ JWT token trong Authorization header
-- Chỉ thiết bị hiện tại (thiết bị đã đăng nhập và tạo ra token) sẽ được đăng xuất
-- Không cần truyền deviceId trong request body
 
 ### 3. Đăng xuất từ tất cả thiết bị
 **POST** `/api/auth/logout-all`
@@ -104,7 +102,7 @@ Authorization: Bearer <jwt-token>
 
 ### Device Information Fields:
 - `deviceId`: Unique identifier cho thiết bị (required)
-- `deviceToken`: FCM token cho push notification (optional)
+- `deviceToken`: FCM token cho push notification (optional, được cập nhật cả khi login và logout)
 - `platform`: Platform của thiết bị (optional, default: WEB)
 - `deviceName`: Tên thiết bị (optional)
 - `osVersion`: Phiên bản OS (optional)
@@ -140,9 +138,10 @@ CREATE TABLE devices (
 - Thông tin device được cập nhật mỗi lần đăng nhập để đảm bảo dữ liệu luôn mới nhất
 
 ### 2. Logout Logic:
-- `logout`: Deactivate device cụ thể
+- `logout`: Deactivate device cụ thể và cập nhật deviceToken nếu được cung cấp
 - `logout-all`: Deactivate tất cả devices của user
 - Device bị deactivate không thể sử dụng để push notification
+- Khi logout, deviceToken sẽ được cập nhật nếu được truyền lên để đảm bảo thông tin FCM token luôn mới nhất
 
 ### 3. Push Notification:
 - Chỉ gửi push notification đến devices có `is_active = true`

@@ -54,6 +54,10 @@ public class AuthDtos {
       @NotBlank @Size(min = 6) String newPassword
   ) {}
 
+  public record LogoutRequest(
+      @NotBlank String deviceId,
+      String deviceToken
+  ) {}
 }
 
 

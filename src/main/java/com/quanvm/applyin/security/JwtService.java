@@ -36,10 +36,6 @@ public class JwtService {
     return extractAllClaims(token).getSubject();
   }
 
-  public String extractDeviceId(String token) {
-    return extractAllClaims(token).get("deviceId", String.class);
-  }
-
   public boolean isTokenValid(String token, String username) {
     Claims claims = extractAllClaims(token);
     return username.equals(claims.getSubject()) && claims.getExpiration().after(new Date());
