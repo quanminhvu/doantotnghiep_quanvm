@@ -41,7 +41,6 @@ public class UploadController {
             .body(ApiResponse.error(400, "File không được để trống"));
       }
 
-      // Tạo tên file unique để tránh conflict
       String originalFileName = file.getOriginalFilename();
       String fileExtension = originalFileName != null && originalFileName.contains(".") 
           ? originalFileName.substring(originalFileName.lastIndexOf("."))

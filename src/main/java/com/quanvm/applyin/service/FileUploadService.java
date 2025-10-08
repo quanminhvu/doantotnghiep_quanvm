@@ -28,12 +28,11 @@ public class FileUploadService {
             return null;
         }
 
-        // Tạo tên file unique để tránh conflict
         String originalFileName = file.getOriginalFilename();
-        String fileExtension = originalFileName != null && originalFileName.contains(".") 
+        String fileExtension = originalFileName != null && originalFileName.contains(".")
             ? originalFileName.substring(originalFileName.lastIndexOf("."))
             : "";
-        String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
+        String uniqueFileName = UUID.randomUUID() + fileExtension;
 
         s3Client.putObject(
             PutObjectRequest.builder()

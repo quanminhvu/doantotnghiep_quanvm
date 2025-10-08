@@ -89,6 +89,7 @@ public ResponseEntity<ApiResponse<DataType>> example(@RequestBody RequestType re
 - `POST /api/auth/forgot-password` - Quên mật khẩu
 - `POST /api/auth/verify-otp` - Xác thực OTP
 - `POST /api/auth/reset-password` - Đặt lại mật khẩu
+- `POST /api/auth/change-password` - Đổi mật khẩu
 
 ### ✅ UserController
 - `GET /api/users/me` - Lấy thông tin cơ bản

@@ -290,6 +290,26 @@ public class AuthService {
   }
 
   @Transactional
+  public void changePassword(ChangePasswordRequest request, String userEmail) {
+    User user = getUserByEmail(userEmail);
+    
+    // Kiểm tra mật khẩu hiện tại
+    if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
+      throw new BadCredentialsException("Mật khẩu hiện tại không đúng");
+    }
+    
+    // Kiểm tra mật khẩu mới không được trùng với mật khẩu cũ
+    if (passwordEncoder.matches(request.newPassword(), user.getPassword())) {
+      throw new IllegalArgumentException("Mật khẩu mới phải khác mật khẩu hiện tại");
+    }
+
+    // Cập nhật mật khẩu mới
+    user.setPassword(passwordEncoder.encode(request.newPassword()));
+    user.setUpdatedAt(Instant.now());
+    userRepository.save(user);
+  }
+
+  @Transactional
   public void logout(LogoutRequest request, String userEmail) {
     User user = getUserByEmail(userEmail);
     Device device = deviceRepository.findByUserAndDeviceId(user, request.deviceId())

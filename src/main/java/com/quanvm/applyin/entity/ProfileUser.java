@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import com.quanvm.applyin.util.constant.UserEnum;
 
 @Entity
 @Table(name = "profile_users")
@@ -44,6 +45,28 @@ public class ProfileUser {
 
   @Column(name = "github_url")
   private String githubUrl;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "gender")
+  private UserEnum.Gender gender;
+
+  @Column(name = "skills_json", columnDefinition = "TEXT")
+  private String skillsJson;
+
+  @Column(name = "experiences_json", columnDefinition = "TEXT")
+  private String experiencesJson;
+
+  @Column(name = "education_json", columnDefinition = "TEXT")
+  private String educationJson;
+
+  @Column(name = "job_seeking")
+  private Boolean jobSeeking;
+
+  @Column(name = "cv_upload_count")
+  private Integer cvUploadCount;
+
+  @Column(name = "cover_letter", columnDefinition = "TEXT")
+  private String coverLetter;
 
   @Column(nullable = false, updatable = false)
   private Instant createdAt;

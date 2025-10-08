@@ -1,9 +1,8 @@
 package com.quanvm.applyin.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
 import java.time.Instant;
+import com.quanvm.applyin.util.constant.UserEnum;
+import java.util.List;
 
 public class UserDtos {
   public record UserProfileResponse(Long id, String fullName, String email, String role) {}
@@ -21,6 +20,13 @@ public class UserDtos {
       String address,
       String linkedinUrl,
       String githubUrl,
+      UserEnum.Gender gender,
+      List<String> skills, 
+      List<Experience> experiences,
+      List<Education> education,
+      Boolean jobSeeking,
+      Integer cvUploadCount,
+      String coverLetter,
       Instant createdAt,
       Instant updatedAt
   ) {}
@@ -34,7 +40,14 @@ public class UserDtos {
       String linkedinUrl,
       String githubUrl,
       String avatarUrl,
-      String cvUrl
+      String cvUrl,
+      UserEnum.Gender gender,
+      List<String> skills,
+      List<Experience> experiences,
+      List<Education> education,
+      Boolean jobSeeking,
+      Integer cvUploadCount,
+      String coverLetter
   ) {}
 
   public record UpdateUserProfileWithFilesRequest(
@@ -44,8 +57,18 @@ public class UserDtos {
       Instant dateOfBirth,
       String address,
       String linkedinUrl,
-      String githubUrl
+      String githubUrl,
+      UserEnum.Gender gender,
+      List<String> skills,
+      List<Experience> experiences,
+      List<Education> education,
+      Boolean jobSeeking,
+      Integer cvUploadCount,
+      String coverLetter
   ) {}
+
+  public record Experience(String title, String company, String timeRange) {}
+  public record Education(String degree, String school, String timeRange) {}
 }
 
 

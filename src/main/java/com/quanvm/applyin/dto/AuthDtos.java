@@ -58,6 +58,11 @@ public class AuthDtos {
       @NotBlank String deviceId,
       String deviceToken
   ) {}
+
+  public record ChangePasswordRequest(
+      @NotBlank String currentPassword,
+      @NotBlank @Size(min = 6) String newPassword
+  ) {}
 }
 
 

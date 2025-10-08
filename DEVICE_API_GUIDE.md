@@ -92,6 +92,50 @@ Authorization: Bearer <jwt-token>
 }
 ```
 
+### 4. Đổi mật khẩu
+**POST** `/api/auth/change-password`
+
+**Headers:**
+```
+Authorization: Bearer <jwt-token>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "currentPassword": "current-password",
+  "newPassword": "new-password-at-least-6-chars"
+}
+```
+
+**Response Success (200):**
+```json
+{
+  "statusCode": 200,
+  "message": "Đổi mật khẩu thành công",
+  "data": null
+}
+```
+
+**Response Error (401) - Mật khẩu hiện tại không đúng:**
+```json
+{
+  "statusCode": 401,
+  "message": "Mật khẩu hiện tại không đúng",
+  "data": null
+}
+```
+
+**Response Error (400) - Mật khẩu mới trùng với mật khẩu cũ:**
+```json
+{
+  "statusCode": 400,
+  "message": "Mật khẩu mới phải khác mật khẩu hiện tại",
+  "data": null
+}
+```
+
 ## Device Platform Support
 
 ### Các platform được hỗ trợ:
