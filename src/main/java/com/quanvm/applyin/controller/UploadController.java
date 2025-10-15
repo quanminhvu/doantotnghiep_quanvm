@@ -45,7 +45,7 @@ public class UploadController {
       String fileExtension = originalFileName != null && originalFileName.contains(".") 
           ? originalFileName.substring(originalFileName.lastIndexOf("."))
           : "";
-      String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
+      String uniqueFileName = UUID.randomUUID() + fileExtension;
 
       s3Client.putObject(
           PutObjectRequest.builder()
