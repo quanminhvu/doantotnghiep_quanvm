@@ -10,6 +10,7 @@ import com.quanvm.applyin.security.JwtService;
 import com.quanvm.applyin.util.constant.UserEnum;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +29,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
   private final UserRepository userRepository;
@@ -39,7 +41,9 @@ public class AuthService {
 
   @Transactional
   public void register(RegisterRequest request) {
+    log.debug("[AUTH][REGISTER][SERVICE] Start register email={}", request.email());
     if (userRepository.existsByEmail(request.email())) {
+      log.warn("[AUTH][REGISTER][SERVICE] Email exists email={}", request.email());
       throw new EmailAlreadyExistsException("Email đã tồn tại trong hệ thống");
     }
     Instant now = Instant.now();
@@ -70,13 +74,16 @@ public class AuthService {
         .updatedAt(now)
         .build();
     userRepository.save(user);
+    log.debug("[AUTH][REGISTER][SERVICE] User saved id={}, email={}", user.getId(), user.getEmail());
   }
 
   public JwtResponse login(LoginRequest request) {
     try {
+      log.debug("[AUTH][LOGIN][SERVICE] Authenticating email={}", request.email());
       authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(request.email(), request.password()));
     } catch (BadCredentialsException ex) {
+      log.warn("[AUTH][LOGIN][SERVICE] Bad credentials email={}", request.email());
       throw new BadCredentialsException("Email hoặc mật khẩu không đúng");
     }
     
@@ -97,7 +104,9 @@ public class AuthService {
         device.isActive()
     );
     
-    return new JwtResponse(token, user.getId(), user.getFullName(), user.getEmail(), user.getRole().name(), deviceInfo);
+    JwtResponse resp = new JwtResponse(token, user.getId(), user.getFullName(), user.getEmail(), user.getRole().name(), deviceInfo);
+    log.debug("[AUTH][LOGIN][SERVICE] Login success userId={}, email={}", user.getId(), user.getEmail());
+    return resp;
   }
 
   @Transactional

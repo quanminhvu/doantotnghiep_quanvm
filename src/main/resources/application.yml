@@ -41,3 +41,10 @@ r2:
   accessKey: d84268a1a9794e478a9661b24ae5f361
   secretKey: 1776d58ac99b56781b134204303595c543f181581405915237e356fca6682df9
   publicBaseUrl: https://pub-ef123f45210b4bcb9ae39d76b2685847.r2.dev
+
+logging:
+  level:
+    com.quanvm.applyin: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO

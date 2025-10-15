@@ -12,6 +12,7 @@ import com.quanvm.applyin.dto.AuthDtos.VerifyOtpRequest;
 import com.quanvm.applyin.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
@@ -29,9 +31,12 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody RegisterRequest request) {
         try {
+            log.debug("[AUTH][REGISTER] Incoming register: fullName={}, email={}, role={}", request.fullName(), request.email(), request.role());
             authService.register(request);
+            log.debug("[AUTH][REGISTER] Register success: email={}", request.email());
             return ResponseEntity.ok(ApiResponse.ok("Đăng ký thành công", null));
         } catch (Exception e) {
+            log.error("[AUTH][REGISTER] Register failed: email={}, error={}", request.email(), e.getMessage(), e);
             throw e;
         }
     }
@@ -39,9 +44,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<JwtResponse>> login(@Valid @RequestBody LoginRequest request) {
         try {
+            log.debug("[AUTH][LOGIN] Incoming login: email={}", request.email());
             JwtResponse data = authService.login(request);
+            log.debug("[AUTH][LOGIN] Login success: email={}, userId={}", data.email(), data.id());
             return ResponseEntity.ok(ApiResponse.ok("Đăng nhập thành công", data));
         } catch (Exception e) {
+            log.error("[AUTH][LOGIN] Login failed: email={}, error={}", request.email(), e.getMessage(), e);
             throw e;
         }
     }
