@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/upload")
+@RequestMapping("/api/upload")
 public class UploadController {
 
   private final S3Client s3Client;
