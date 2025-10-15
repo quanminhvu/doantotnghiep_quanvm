@@ -87,13 +87,13 @@ public class RecruiterController {
   }
 
   // Upload integration: client should first call /upload to get R2 URL, then set here
-  @PostMapping("/profile/logo")
+  @PutMapping("/profile/logo")
   @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
   public ResponseEntity<RecruiterProfileResponse> setCompanyLogo(Authentication auth, @RequestParam String url) {
     return ResponseEntity.ok(recruiterService.updateLogoUrl(email(auth), url));
   }
 
-  @PostMapping("/profile/avatar")
+  @PutMapping("/profile/avatar")
   @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
   public ResponseEntity<RecruiterProfileResponse> setRecruiterAvatar(Authentication auth, @RequestParam String url) {
     return ResponseEntity.ok(recruiterService.updateAvatarUrl(email(auth), url));
