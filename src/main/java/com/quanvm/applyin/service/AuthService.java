@@ -1,6 +1,14 @@
 package com.quanvm.applyin.service;
 
-import com.quanvm.applyin.dto.AuthDtos.*;
+import com.quanvm.applyin.dto.AuthDtos.RegisterRequest;
+import com.quanvm.applyin.dto.AuthDtos.LoginRequest;
+import com.quanvm.applyin.dto.AuthDtos.JwtResponse;
+import com.quanvm.applyin.dto.AuthDtos.DeviceInfo;
+import com.quanvm.applyin.dto.AuthDtos.ForgotPasswordRequest;
+import com.quanvm.applyin.dto.AuthDtos.VerifyOtpRequest;
+import com.quanvm.applyin.dto.AuthDtos.ResetPasswordRequest;
+import com.quanvm.applyin.dto.AuthDtos.LogoutRequest;
+import com.quanvm.applyin.dto.AuthDtos.ChangePasswordRequest;
 import com.quanvm.applyin.entity.Device;
 import com.quanvm.applyin.entity.User;
 import com.quanvm.applyin.exception.*;

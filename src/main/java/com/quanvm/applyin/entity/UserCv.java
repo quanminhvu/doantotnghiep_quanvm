@@ -35,6 +35,7 @@ public class UserCv {
   private String fileType;
 
   @Column(name = "is_primary")
+  @Builder.Default
   private Boolean isPrimary = false;
 
   @Column(name = "description", columnDefinition = "TEXT")
