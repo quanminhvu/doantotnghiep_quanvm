@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.List;
+import com.quanvm.applyin.util.ListToJsonStringConverter;
 
 @Entity
 @Table(name = "job_postings")
@@ -31,14 +33,17 @@ public class JobPosting {
   @Column(name = "employment_type")
   private String employmentType;
 
-  @Column(columnDefinition = "TEXT")
-  private String description;
+  @Convert(converter = ListToJsonStringConverter.class)
+  @Column(name = "description", columnDefinition = "TEXT")
+  private List<String> description;
 
+  @Convert(converter = ListToJsonStringConverter.class)
   @Column(name = "requirements", columnDefinition = "TEXT")
-  private String requirements;
+  private List<String> requirements;
 
+  @Convert(converter = ListToJsonStringConverter.class)
   @Column(name = "benefits", columnDefinition = "TEXT")
-  private String benefits;
+  private List<String> benefits;
 
   @Column(name = "salary_min")
   private Long salaryMin;

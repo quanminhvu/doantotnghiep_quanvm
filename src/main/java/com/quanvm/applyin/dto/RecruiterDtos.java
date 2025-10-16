@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.Instant;
+import java.util.List;
 
 public class RecruiterDtos {
 
@@ -48,9 +49,9 @@ public class RecruiterDtos {
       @NotBlank String title,
       String location,
       String employmentType,
-      @Size(max = 10000) String description,
-      String requirements,
-      String benefits,
+      List<String> description,
+      List<String> requirements,
+      List<String> benefits,
       Long salaryMin,
       Long salaryMax,
       Boolean active
@@ -61,9 +62,9 @@ public class RecruiterDtos {
       String title,
       String location,
       String employmentType,
-      String description,
-      String requirements,
-      String benefits,
+      List<String> description,
+      List<String> requirements,
+      List<String> benefits,
       Long salaryMin,
       Long salaryMax,
       boolean active,
