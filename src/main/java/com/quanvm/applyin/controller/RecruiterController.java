@@ -2,6 +2,7 @@ package com.quanvm.applyin.controller;
 
 import com.quanvm.applyin.dto.RecruiterDtos.*;
 import com.quanvm.applyin.service.RecruiterService;
+import com.quanvm.applyin.service.FileUploadService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 public class RecruiterController {
 
   private final RecruiterService recruiterService;
+  private final FileUploadService fileUploadService;
 
   private String email(Authentication auth) {
     return auth.getName();
@@ -85,8 +87,6 @@ public class RecruiterController {
   ) {
     return ResponseEntity.ok(recruiterService.updateApplicationStatus(email(auth), id, status, note));
   }
-
-  // Upload integration: client should first call /upload to get R2 URL, then set here
   @PutMapping("/profile/logo")
   @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
   public ResponseEntity<RecruiterProfileResponse> setCompanyLogo(Authentication auth, @RequestParam String url) {
@@ -96,6 +96,32 @@ public class RecruiterController {
   @PutMapping("/profile/avatar")
   @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
   public ResponseEntity<RecruiterProfileResponse> setRecruiterAvatar(Authentication auth, @RequestParam String url) {
+    return ResponseEntity.ok(recruiterService.updateAvatarUrl(email(auth), url));
+  }
+
+  @PutMapping("/profile/logo/upload")
+  @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
+  public ResponseEntity<RecruiterProfileResponse> uploadCompanyLogo(
+      Authentication auth,
+      @RequestParam("logo") org.springframework.web.multipart.MultipartFile logo
+  ) throws Exception {
+    if (logo == null || logo.isEmpty()) {
+      return ResponseEntity.badRequest().build();
+    }
+    String url = fileUploadService.uploadFile(logo, "recruiter/logo");
+    return ResponseEntity.ok(recruiterService.updateLogoUrl(email(auth), url));
+  }
+
+  @PutMapping("/profile/avatar/upload")
+  @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
+  public ResponseEntity<RecruiterProfileResponse> uploadRecruiterAvatar(
+      Authentication auth,
+      @RequestParam("avatar") org.springframework.web.multipart.MultipartFile avatar
+  ) throws Exception {
+    if (avatar == null || avatar.isEmpty()) {
+      return ResponseEntity.badRequest().build();
+    }
+    String url = fileUploadService.uploadFile(avatar, "recruiter/avatar");
     return ResponseEntity.ok(recruiterService.updateAvatarUrl(email(auth), url));
   }
 }

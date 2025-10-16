@@ -75,12 +75,24 @@
   ```
 - Step 2: Persist URL to profile
   - Company logo:
-    - Method: `POST`
+    - Method: `PUT`
     - Path: `/api/recruiter/profile/logo?url=<fileUrl>`
     - Response 200: `RecruiterProfileResponse`
   - Recruiter avatar:
-    - Method: `POST`
+    - Method: `PUT`
     - Path: `/api/recruiter/profile/avatar?url=<fileUrl>`
+    - Response 200: `RecruiterProfileResponse`
+
+- Alternative (giống Candidate: upload trực tiếp trong endpoint)
+  - Company logo (upload file):
+    - Method: `PUT`
+    - Path: `/api/recruiter/profile/logo/upload`
+    - Form-data: `logo: <binary>`
+    - Response 200: `RecruiterProfileResponse`
+  - Recruiter avatar (upload file):
+    - Method: `PUT`
+    - Path: `/api/recruiter/profile/avatar/upload`
+    - Form-data: `avatar: <binary>`
     - Response 200: `RecruiterProfileResponse`
 
 ---
