@@ -189,10 +189,30 @@ public class RecruiterService {
   }
 
   private JobPostingResponse mapJob(JobPosting j) {
+    // Get recruiter profile for company information
+    RecruiterProfile recruiterProfile = recruiterProfileRepository.findByUserId(j.getRecruiter().getId())
+        .orElse(null);
+    
     return new JobPostingResponse(
-        j.getId(), j.getTitle(), j.getLocation(), j.getEmploymentType(), j.getDescription(),
-        j.getRequirements(), j.getBenefits(), j.getSalaryMin(), j.getSalaryMax(), j.isActive(),
-        j.getCreatedAt(), j.getUpdatedAt());
+        j.getId(), 
+        j.getTitle(), 
+        j.getLocation(), 
+        j.getEmploymentType(), 
+        j.getDescription(),
+        j.getRequirements(), 
+        j.getBenefits(), 
+        j.getSalaryMin(), 
+        j.getSalaryMax(), 
+        j.isActive(),
+        // Company information
+        recruiterProfile != null ? recruiterProfile.getCompanyName() : "Unknown Company",
+        recruiterProfile != null ? recruiterProfile.getLogoUrl() : null,
+        recruiterProfile != null ? recruiterProfile.getCompanyAddress() : null,
+        recruiterProfile != null ? recruiterProfile.getCompanySize() : null,
+        recruiterProfile != null ? recruiterProfile.getCompanyWebsite() : null,
+        j.getCreatedAt(), 
+        j.getUpdatedAt()
+    );
   }
 
   private JobApplicationResponse mapApplication(JobApplication a) {
