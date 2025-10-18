@@ -81,6 +81,12 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.of(HttpStatus.FORBIDDEN.value(), "Bạn không có quyền truy cập tài nguyên này", null));
   }
 
+  @ExceptionHandler(ApplicationLimitExceededException.class)
+  public ResponseEntity<ApiResponse<Object>> handleApplicationLimitExceededException(ApplicationLimitExceededException ex) {
+    log.warn("ApplicationLimitExceededException: {}", ex.getMessage(), ex);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.of(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null));
+  }
+
   @ExceptionHandler(MaxUploadSizeExceededException.class)
   public ResponseEntity<ApiResponse<Object>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
     log.warn("MaxUploadSizeExceededException: {}", ex.getMessage(), ex);

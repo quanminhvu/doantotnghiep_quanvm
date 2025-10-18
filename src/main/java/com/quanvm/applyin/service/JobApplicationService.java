@@ -5,6 +5,7 @@ import com.quanvm.applyin.entity.JobApplication;
 import com.quanvm.applyin.entity.JobPosting;
 import com.quanvm.applyin.entity.RecruiterProfile;
 import com.quanvm.applyin.entity.User;
+import com.quanvm.applyin.exception.ApplicationLimitExceededException;
 import com.quanvm.applyin.repository.JobApplicationRepository;
 import com.quanvm.applyin.repository.JobPostingRepository;
 import com.quanvm.applyin.repository.RecruiterProfileRepository;
@@ -40,7 +41,7 @@ public class JobApplicationService {
     // Check application limit (max 3 times)
     Integer applicationCount = jobApplicationRepository.countByCandidateAndJobPosting(candidate, job);
     if (applicationCount >= 3) {
-      throw new RuntimeException("Bạn đã hết lượt ứng tuyển cho công việc này (tối đa 3 lần)");
+      throw new ApplicationLimitExceededException("Bạn đã hết lượt ứng tuyển cho công việc này (tối đa 3 lần)");
     }
     
     // Get next application number
