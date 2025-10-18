@@ -29,6 +29,7 @@ public class SecurityConfig {
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(registry -> registry
             .requestMatchers("/api/auth/**", "/api/jobs/**", "/actuator/health", "/upload").permitAll()
+            .requestMatchers("/api/applications/**").hasRole("CANDIDATE")
             .anyRequest().authenticated()
         )
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
