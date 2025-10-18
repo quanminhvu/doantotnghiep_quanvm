@@ -54,4 +54,22 @@ public class JobApplicationController {
   ) {
     return ResponseEntity.ok(jobApplicationService.withdrawApplication(email(auth), id));
   }
+
+  @GetMapping("/job/{jobId}")
+  @PreAuthorize("hasRole('CANDIDATE')")
+  public ResponseEntity<List<JobApplicationResponse>> getApplicationsForJob(
+      Authentication auth,
+      @PathVariable Long jobId
+  ) {
+    return ResponseEntity.ok(jobApplicationService.getApplicationsForJob(email(auth), jobId));
+  }
+
+  @GetMapping("/job/{jobId}/count")
+  @PreAuthorize("hasRole('CANDIDATE')")
+  public ResponseEntity<Integer> getApplicationCountForJob(
+      Authentication auth,
+      @PathVariable Long jobId
+  ) {
+    return ResponseEntity.ok(jobApplicationService.getApplicationCountForJob(email(auth), jobId));
+  }
 }

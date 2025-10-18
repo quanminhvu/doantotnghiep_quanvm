@@ -26,6 +26,7 @@ public class JobApplicationDtos {
       String coverLetter,
       String note,
       String status,
+      Integer applicationNumber,
       Instant createdAt,
       Instant updatedAt
   ) {}

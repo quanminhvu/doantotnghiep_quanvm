@@ -6,7 +6,8 @@ import lombok.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "job_applications")
+@Table(name = "job_applications", 
+       uniqueConstraints = @UniqueConstraint(columnNames = {"job_posting_id", "candidate_user_id", "application_number"}))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,6 +36,9 @@ public class JobApplication {
 
   @Column(columnDefinition = "TEXT")
   private String note;
+
+  @Column(name = "application_number", nullable = false)
+  private Integer applicationNumber;
 
   @Column(nullable = false, updatable = false)
   private Instant createdAt;

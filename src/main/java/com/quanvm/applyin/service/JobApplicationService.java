@@ -37,21 +37,26 @@ public class JobApplicationService {
     JobPosting job = jobPostingRepository.findById(request.jobId())
         .orElseThrow(() -> new RuntimeException("Job not found"));
     
-    // Check if already applied
-    if (jobApplicationRepository.existsByCandidateAndJobPosting(candidate, job)) {
-      throw new RuntimeException("You have already applied for this job");
+    // Check application limit (max 3 times)
+    Integer applicationCount = jobApplicationRepository.countByCandidateAndJobPosting(candidate, job);
+    if (applicationCount >= 3) {
+      throw new RuntimeException("Bạn đã hết lượt ứng tuyển cho công việc này (tối đa 3 lần)");
     }
+    
+    // Get next application number
+    Integer nextApplicationNumber = applicationCount + 1;
     
     JobApplication application = JobApplication.builder()
         .candidate(candidate)
         .jobPosting(job)
         .cvUrl(request.cvUrl())
         .note(request.note())
+        .applicationNumber(nextApplicationNumber)
         .status(JobApplication.Status.SUBMITTED)
         .build();
     
     JobApplication saved = jobApplicationRepository.save(application);
-    log.debug("[APPLICATION][APPLY] success applicationId={}", saved.getId());
+    log.debug("[APPLICATION][APPLY] success applicationId={}, applicationNumber={}", saved.getId(), nextApplicationNumber);
     
     return mapToResponse(saved);
   }
@@ -67,6 +72,34 @@ public class JobApplicationService {
     return applications.stream()
         .map(this::mapToResponse)
         .collect(Collectors.toList());
+  }
+
+  public List<JobApplicationResponse> getApplicationsForJob(String userEmail, Long jobId) {
+    log.debug("[APPLICATION][LIST_BY_JOB] userEmail={}, jobId={}", userEmail, jobId);
+    
+    User candidate = userRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+    
+    JobPosting job = jobPostingRepository.findById(jobId)
+        .orElseThrow(() -> new RuntimeException("Job not found"));
+    
+    List<JobApplication> applications = jobApplicationRepository.findByCandidateAndJobPostingOrderByApplicationNumberDesc(candidate, job);
+    
+    return applications.stream()
+        .map(this::mapToResponse)
+        .collect(Collectors.toList());
+  }
+
+  public Integer getApplicationCountForJob(String userEmail, Long jobId) {
+    log.debug("[APPLICATION][COUNT] userEmail={}, jobId={}", userEmail, jobId);
+    
+    User candidate = userRepository.findByEmail(userEmail)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+    
+    JobPosting job = jobPostingRepository.findById(jobId)
+        .orElseThrow(() -> new RuntimeException("Job not found"));
+    
+    return jobApplicationRepository.countByCandidateAndJobPosting(candidate, job);
   }
 
   public JobApplicationResponse getApplication(String userEmail, Long applicationId) {
@@ -116,6 +149,7 @@ public class JobApplicationService {
         .coverLetter(application.getNote()) // Using note as cover letter
         .note(application.getNote())
         .status(application.getStatus().name())
+        .applicationNumber(application.getApplicationNumber())
         .createdAt(application.getCreatedAt())
         .updatedAt(application.getUpdatedAt())
         .build();
