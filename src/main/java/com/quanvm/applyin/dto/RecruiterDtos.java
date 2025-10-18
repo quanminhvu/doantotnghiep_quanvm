@@ -68,6 +68,12 @@ public class RecruiterDtos {
       Long salaryMin,
       Long salaryMax,
       boolean active,
+      // Company information
+      String companyName,
+      String companyLogoUrl,
+      String companyAddress,
+      String companySize,
+      String companyWebsite,
       Instant createdAt,
       Instant updatedAt
   ) {}
