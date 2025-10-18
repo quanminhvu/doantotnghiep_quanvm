@@ -30,6 +30,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(registry -> registry
             .requestMatchers("/api/auth/**", "/api/jobs/**", "/actuator/health", "/upload").permitAll()
             .requestMatchers("/api/applications/**").hasRole("CANDIDATE")
+            .requestMatchers("/api/recruiter/applications/**").hasRole("RECRUITER")
             .anyRequest().authenticated()
         )
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -19,6 +19,10 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
   List<JobApplication> findByCandidateAndJobPostingOrderByApplicationNumberDesc(User candidate, JobPosting jobPosting);
   Integer countByCandidateAndJobPosting(User candidate, JobPosting jobPosting);
   Optional<JobApplication> findByCandidateAndJobPostingAndApplicationNumber(User candidate, JobPosting jobPosting, Integer applicationNumber);
+  
+  // Recruiter queries
+  List<JobApplication> findByJobPostingOrderByCreatedAtDesc(JobPosting posting);
+  List<JobApplication> findByJobPostingInOrderByCreatedAtDesc(List<JobPosting> postings);
 }
 
 
