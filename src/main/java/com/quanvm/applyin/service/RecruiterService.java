@@ -1,11 +1,9 @@
 package com.quanvm.applyin.service;
 
 import com.quanvm.applyin.dto.RecruiterDtos.*;
-import com.quanvm.applyin.entity.JobApplication;
 import com.quanvm.applyin.entity.JobPosting;
 import com.quanvm.applyin.entity.RecruiterProfile;
 import com.quanvm.applyin.entity.User;
-import com.quanvm.applyin.repository.JobApplicationRepository;
 import com.quanvm.applyin.repository.JobPostingRepository;
 import com.quanvm.applyin.repository.RecruiterProfileRepository;
 import com.quanvm.applyin.repository.UserRepository;
@@ -25,7 +23,6 @@ public class RecruiterService {
 
   private final RecruiterProfileRepository recruiterProfileRepository;
   private final JobPostingRepository jobPostingRepository;
-  private final JobApplicationRepository jobApplicationRepository;
   private final UserRepository userRepository;
 
   private void ensureRecruiter(User user) {
@@ -132,28 +129,6 @@ public class RecruiterService {
     jobPostingRepository.delete(job);
   }
 
-  public List<JobApplicationResponse> listApplicationsForMyCompany(String email) {
-    User user = userRepository.findByEmail(email).orElseThrow();
-    ensureRecruiter(user);
-    return jobApplicationRepository.findByJobPostingRecruiter(user).stream()
-        .map(this::mapApplication)
-        .collect(Collectors.toList());
-  }
-
-  @Transactional
-  public JobApplicationResponse updateApplicationStatus(String email, Long applicationId, String status, String note) {
-    User user = userRepository.findByEmail(email).orElseThrow();
-    ensureRecruiter(user);
-    JobApplication app = jobApplicationRepository.findById(applicationId).orElseThrow();
-    if (!app.getJobPosting().getRecruiter().getId().equals(user.getId())) {
-      throw new AccessDeniedException("Không có quyền cập nhật đơn này");
-    }
-    app.setStatus(JobApplication.Status.valueOf(status.toUpperCase()));
-    app.setNote(note);
-    app.setUpdatedAt(Instant.now());
-    jobApplicationRepository.save(app);
-    return mapApplication(app);
-  }
 
   private RecruiterProfileResponse mapProfile(RecruiterProfile p) {
     return new RecruiterProfileResponse(
@@ -215,11 +190,6 @@ public class RecruiterService {
     );
   }
 
-  private JobApplicationResponse mapApplication(JobApplication a) {
-    return new JobApplicationResponse(
-        a.getId(), a.getJobPosting().getId(), a.getCandidate().getId(), a.getCvUrl(),
-        a.getStatus().name(), a.getNote(), a.getCreatedAt(), a.getUpdatedAt());
-  }
 }
 
 

@@ -71,22 +71,6 @@ public class RecruiterController {
     return ResponseEntity.noContent().build();
   }
 
-  @GetMapping("/applications")
-  @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
-  public ResponseEntity<List<JobApplicationResponse>> listApplications(Authentication auth) {
-    return ResponseEntity.ok(recruiterService.listApplicationsForMyCompany(email(auth)));
-  }
-
-  @PutMapping("/applications/{id}")
-  @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
-  public ResponseEntity<JobApplicationResponse> updateApplication(
-      Authentication auth,
-      @PathVariable Long id,
-      @RequestParam String status,
-      @RequestParam(required = false) String note
-  ) {
-    return ResponseEntity.ok(recruiterService.updateApplicationStatus(email(auth), id, status, note));
-  }
   @PutMapping("/profile/logo")
   @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
   public ResponseEntity<RecruiterProfileResponse> setCompanyLogo(Authentication auth, @RequestParam String url) {
