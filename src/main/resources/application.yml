@@ -1,6 +1,6 @@
 security:
   jwt:
-    secret: ${JWT_SECRET:VGhpc0lzQVN1cGVyU2V5VGhhdFNob3VsZEJlMzJCeXRlc0xvbmc=}
+    secret: ${JWT_SECRET:hLgF/N1/F3PzmJNNII2sj5NOCKCBGq9t0qV7S5f9yMTIxbLI9yVJY5pkaK3WzFNnk7qLwFrG+Wz5XA4Uf+0vtQ==}
     expirationMs: ${JWT_EXPIRATION_MS:3600000}
 
 spring:

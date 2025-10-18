@@ -33,20 +33,32 @@ public class JwtService {
   }
 
   public String extractUsername(String token) {
-    return extractAllClaims(token).getSubject();
+    try {
+      return extractAllClaims(token).getSubject();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public boolean isTokenValid(String token, String username) {
-    Claims claims = extractAllClaims(token);
-    return username.equals(claims.getSubject()) && claims.getExpiration().after(new Date());
+    try {
+      Claims claims = extractAllClaims(token);
+      return username.equals(claims.getSubject()) && claims.getExpiration().after(new Date());
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   private Claims extractAllClaims(String token) {
-    return Jwts.parserBuilder()
-        .setSigningKey(getSigningKey())
-        .build()
-        .parseClaimsJws(token)
-        .getBody();
+    try {
+      return Jwts.parserBuilder()
+          .setSigningKey(getSigningKey())
+          .build()
+          .parseClaimsJws(token)
+          .getBody();
+    } catch (Exception e) {
+      throw new RuntimeException("Invalid JWT token", e);
+    }
   }
 
   private Key getSigningKey() {
