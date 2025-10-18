@@ -229,5 +229,3 @@
 - 403: Forbidden (not recruiter/admin, or not owner of resource)
 - 404: Not Found (job/application not found)
 - 409: Conflict (business rule conflict)
-
-

@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface JobPostingRepository extends JpaRepository<JobPosting, Long> {
   List<JobPosting> findByRecruiter(User recruiter);
+  List<JobPosting> findByActiveTrueOrderByCreatedAtDesc();
 }
 
 
