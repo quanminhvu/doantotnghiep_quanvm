@@ -1,6 +1,5 @@
 package com.quanvm.applyin.dto;
 
-import com.quanvm.applyin.entity.JobApplication;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 

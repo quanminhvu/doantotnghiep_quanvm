@@ -3,9 +3,11 @@ package com.quanvm.applyin.service;
 import com.quanvm.applyin.dto.JobApplicationDtos.*;
 import com.quanvm.applyin.entity.JobApplication;
 import com.quanvm.applyin.entity.JobPosting;
+import com.quanvm.applyin.entity.RecruiterProfile;
 import com.quanvm.applyin.entity.User;
 import com.quanvm.applyin.repository.JobApplicationRepository;
 import com.quanvm.applyin.repository.JobPostingRepository;
+import com.quanvm.applyin.repository.RecruiterProfileRepository;
 import com.quanvm.applyin.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ public class JobApplicationService {
   private final JobApplicationRepository jobApplicationRepository;
   private final JobPostingRepository jobPostingRepository;
   private final UserRepository userRepository;
+  private final RecruiterProfileRepository recruiterProfileRepository;
 
   @Transactional
   public JobApplicationResponse applyForJob(String userEmail, JobApplicationRequest request) {
@@ -100,11 +103,15 @@ public class JobApplicationService {
   }
 
   private JobApplicationResponse mapToResponse(JobApplication application) {
+    // Get recruiter profile for company information
+    RecruiterProfile recruiterProfile = recruiterProfileRepository.findByUser(application.getJobPosting().getRecruiter())
+        .orElse(null);
+    
     return JobApplicationResponse.builder()
         .id(application.getId())
         .jobId(application.getJobPosting().getId())
         .jobTitle(application.getJobPosting().getTitle())
-        .companyName(application.getJobPosting().getRecruiter().getRecruiterProfile().getCompanyName())
+        .companyName(recruiterProfile != null ? recruiterProfile.getCompanyName() : "Unknown Company")
         .cvUrl(application.getCvUrl())
         .coverLetter(application.getNote()) // Using note as cover letter
         .note(application.getNote())

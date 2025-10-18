@@ -7,13 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface JobApplicationRepository extends JpaRepository<JobApplication, Long> {
   List<JobApplication> findByJobPosting(JobPosting posting);
   List<JobApplication> findByJobPostingRecruiter(User recruiter);
   List<JobApplication> findByCandidateOrderByCreatedAtDesc(User candidate);
-  JobApplication findByIdAndCandidate(Long id, User candidate);
+  Optional<JobApplication> findByIdAndCandidate(Long id, User candidate);
   boolean existsByCandidateAndJobPosting(User candidate, JobPosting jobPosting);
 }
 
