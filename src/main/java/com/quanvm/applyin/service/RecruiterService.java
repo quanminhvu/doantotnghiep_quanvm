@@ -1,5 +1,7 @@
 package com.quanvm.applyin.service;
 
+import com.quanvm.applyin.dto.PaginationDto.PaginationRequest;
+import com.quanvm.applyin.dto.PaginationDto.PaginationResponse;
 import com.quanvm.applyin.dto.RecruiterDtos.*;
 import com.quanvm.applyin.entity.JobPosting;
 import com.quanvm.applyin.entity.RecruiterProfile;
@@ -9,6 +11,10 @@ import com.quanvm.applyin.repository.RecruiterProfileRepository;
 import com.quanvm.applyin.repository.UserRepository;
 import com.quanvm.applyin.util.constant.UserEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +77,37 @@ public class RecruiterService {
     User user = userRepository.findByEmail(email).orElseThrow();
     ensureRecruiter(user);
     return jobPostingRepository.findByRecruiter(user).stream().map(this::mapJob).collect(Collectors.toList());
+  }
+
+  public PaginationResponse<JobPostingResponse> listMyJobsPaginated(String email, PaginationRequest request) {
+    User user = userRepository.findByEmail(email).orElseThrow();
+    ensureRecruiter(user);
+    
+    Sort sort = Sort.by(
+        "desc".equalsIgnoreCase(request.sortDirection()) 
+            ? Sort.Direction.DESC 
+            : Sort.Direction.ASC,
+        request.sortBy()
+    );
+    
+    Pageable pageable = PageRequest.of(request.page(), request.size(), sort);
+    Page<JobPosting> jobPage = jobPostingRepository.findByRecruiter(user, pageable);
+    
+    List<JobPostingResponse> content = jobPage.getContent().stream()
+        .map(this::mapJob)
+        .collect(Collectors.toList());
+    
+    return PaginationResponse.<JobPostingResponse>builder()
+        .content(content)
+        .page(jobPage.getNumber())
+        .size(jobPage.getSize())
+        .totalElements(jobPage.getTotalElements())
+        .totalPages(jobPage.getTotalPages())
+        .first(jobPage.isFirst())
+        .last(jobPage.isLast())
+        .hasNext(jobPage.hasNext())
+        .hasPrevious(jobPage.hasPrevious())
+        .build();
   }
 
   @Transactional

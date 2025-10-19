@@ -1,11 +1,17 @@
 package com.quanvm.applyin.service;
 
+import com.quanvm.applyin.dto.PaginationDto.PaginationRequest;
+import com.quanvm.applyin.dto.PaginationDto.PaginationResponse;
 import com.quanvm.applyin.dto.RecruiterDtos.JobPostingResponse;
 import com.quanvm.applyin.entity.JobPosting;
 import com.quanvm.applyin.entity.RecruiterProfile;
 import com.quanvm.applyin.repository.JobPostingRepository;
 import com.quanvm.applyin.repository.RecruiterProfileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +29,34 @@ public class JobService {
     return jobs.stream()
         .map(this::toResponse)
         .collect(Collectors.toList());
+  }
+
+  public PaginationResponse<JobPostingResponse> listActiveJobsPaginated(PaginationRequest request) {
+    Sort sort = Sort.by(
+        "desc".equalsIgnoreCase(request.sortDirection()) 
+            ? Sort.Direction.DESC 
+            : Sort.Direction.ASC,
+        request.sortBy()
+    );
+    
+    Pageable pageable = PageRequest.of(request.page(), request.size(), sort);
+    Page<JobPosting> jobPage = jobPostingRepository.findByActiveTrue(pageable);
+    
+    List<JobPostingResponse> content = jobPage.getContent().stream()
+        .map(this::toResponse)
+        .collect(Collectors.toList());
+    
+    return PaginationResponse.<JobPostingResponse>builder()
+        .content(content)
+        .page(jobPage.getNumber())
+        .size(jobPage.getSize())
+        .totalElements(jobPage.getTotalElements())
+        .totalPages(jobPage.getTotalPages())
+        .first(jobPage.isFirst())
+        .last(jobPage.isLast())
+        .hasNext(jobPage.hasNext())
+        .hasPrevious(jobPage.hasPrevious())
+        .build();
   }
 
   public JobPostingResponse getJobById(Long id) {

@@ -1,5 +1,7 @@
 package com.quanvm.applyin.controller;
 
+import com.quanvm.applyin.dto.PaginationDto.PaginationRequest;
+import com.quanvm.applyin.dto.PaginationDto.PaginationResponse;
 import com.quanvm.applyin.dto.RecruiterDtos.*;
 import com.quanvm.applyin.service.RecruiterService;
 import com.quanvm.applyin.service.FileUploadService;
@@ -43,6 +45,25 @@ public class RecruiterController {
   @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
   public ResponseEntity<List<JobPostingResponse>> listMyJobs(Authentication auth) {
     return ResponseEntity.ok(recruiterService.listMyJobs(email(auth)));
+  }
+
+  @GetMapping("/jobs/paginated")
+  @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
+  public ResponseEntity<PaginationResponse<JobPostingResponse>> listMyJobsPaginated(
+      Authentication auth,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "createdAt") String sortBy,
+      @RequestParam(defaultValue = "desc") String sortDirection
+  ) {
+    PaginationRequest request = PaginationRequest.builder()
+        .page(page)
+        .size(size)
+        .sortBy(sortBy)
+        .sortDirection(sortDirection)
+        .build();
+    
+    return ResponseEntity.ok(recruiterService.listMyJobsPaginated(email(auth), request));
   }
 
   @PostMapping("/jobs")

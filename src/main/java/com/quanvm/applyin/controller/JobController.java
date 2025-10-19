@@ -1,5 +1,7 @@
 package com.quanvm.applyin.controller;
 
+import com.quanvm.applyin.dto.PaginationDto.PaginationRequest;
+import com.quanvm.applyin.dto.PaginationDto.PaginationResponse;
 import com.quanvm.applyin.dto.RecruiterDtos.JobPostingResponse;
 import com.quanvm.applyin.service.JobService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,23 @@ public class JobController {
   @GetMapping
   public ResponseEntity<List<JobPostingResponse>> listActiveJobs() {
     return ResponseEntity.ok(jobService.listActiveJobs());
+  }
+
+  @GetMapping("/paginated")
+  public ResponseEntity<PaginationResponse<JobPostingResponse>> listActiveJobsPaginated(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "createdAt") String sortBy,
+      @RequestParam(defaultValue = "desc") String sortDirection
+  ) {
+    PaginationRequest request = PaginationRequest.builder()
+        .page(page)
+        .size(size)
+        .sortBy(sortBy)
+        .sortDirection(sortDirection)
+        .build();
+    
+    return ResponseEntity.ok(jobService.listActiveJobsPaginated(request));
   }
 
   @GetMapping("/{id}")
