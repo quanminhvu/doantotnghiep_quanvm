@@ -107,11 +107,6 @@ public class SavedJobService {
                 savedJob.getJobPosting().getSalaryMin();
                 savedJob.getJobPosting().getSalaryMax();
                 savedJob.getJobPosting().isActive();
-                savedJob.getJobPosting().getCompanyName();
-                savedJob.getJobPosting().getCompanyLogoUrl();
-                savedJob.getJobPosting().getCompanyAddress();
-                savedJob.getJobPosting().getCompanySize();
-                savedJob.getJobPosting().getCompanyWebsite();
                 savedJob.getJobPosting().getCreatedAt();
                 savedJob.getJobPosting().getUpdatedAt();
             }
