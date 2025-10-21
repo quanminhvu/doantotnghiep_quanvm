@@ -92,26 +92,33 @@ public class SavedJobService {
     /**
      * Lấy danh sách công việc đã lưu của user
      */
+    @Transactional(readOnly = true)
     public Page<SavedJob> getSavedJobs(Long userId, Pageable pageable) {
-        Page<SavedJob> savedJobs = savedJobRepository.findByUserIdWithJobPosting(userId, pageable);
-        // Force eager loading để tránh lazy loading proxy
-        savedJobs.getContent().forEach(savedJob -> {
-            if (savedJob.getJobPosting() != null) {
-                savedJob.getJobPosting().getId();
-                savedJob.getJobPosting().getTitle();
-                savedJob.getJobPosting().getLocation();
-                savedJob.getJobPosting().getEmploymentType();
-                savedJob.getJobPosting().getDescription();
-                savedJob.getJobPosting().getRequirements();
-                savedJob.getJobPosting().getBenefits();
-                savedJob.getJobPosting().getSalaryMin();
-                savedJob.getJobPosting().getSalaryMax();
-                savedJob.getJobPosting().isActive();
-                savedJob.getJobPosting().getCreatedAt();
-                savedJob.getJobPosting().getUpdatedAt();
-            }
-        });
-        return savedJobs;
+        try {
+            Page<SavedJob> savedJobs = savedJobRepository.findByUserIdWithJobPosting(userId, pageable);
+            // Force eager loading để tránh lazy loading proxy
+            savedJobs.getContent().forEach(savedJob -> {
+                if (savedJob.getJobPosting() != null) {
+                    // Force load all fields
+                    savedJob.getJobPosting().getId();
+                    savedJob.getJobPosting().getTitle();
+                    savedJob.getJobPosting().getLocation();
+                    savedJob.getJobPosting().getEmploymentType();
+                    savedJob.getJobPosting().getDescription();
+                    savedJob.getJobPosting().getRequirements();
+                    savedJob.getJobPosting().getBenefits();
+                    savedJob.getJobPosting().getSalaryMin();
+                    savedJob.getJobPosting().getSalaryMax();
+                    savedJob.getJobPosting().isActive();
+                    savedJob.getJobPosting().getCreatedAt();
+                    savedJob.getJobPosting().getUpdatedAt();
+                }
+            });
+            return savedJobs;
+        } catch (Exception e) {
+            log.error("Error getting saved jobs for user {}: {}", userId, e.getMessage(), e);
+            throw e;
+        }
     }
     
     /**

@@ -1,5 +1,6 @@
 package com.quanvm.applyin.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +25,7 @@ public class JobPosting {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "recruiter_user_id", nullable = false)
+  @JsonIgnore
   private User recruiter;
 
   @Column(nullable = false)
