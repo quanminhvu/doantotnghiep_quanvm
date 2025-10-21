@@ -28,7 +28,6 @@ public interface SavedJobRepository extends JpaRepository<SavedJob, Long> {
      * Lấy danh sách saved jobs của user với pagination
      */
     @Query("SELECT sj FROM SavedJob sj " +
-           "JOIN FETCH sj.jobPosting jp " +
            "WHERE sj.user.id = :userId " +
            "ORDER BY sj.savedAt DESC")
     Page<SavedJob> findByUserIdWithJobPosting(@Param("userId") Long userId, Pageable pageable);
