@@ -29,7 +29,7 @@ public class SecurityConfig {
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(registry -> registry
             .requestMatchers("/api/auth/**", "/api/jobs/**", "/actuator/health", "/upload", "/").permitAll()
-            .requestMatchers("/api/applications/**").hasRole("CANDIDATE")
+            .requestMatchers("/api/applications/**", "/api/saved-jobs/**").hasRole("CANDIDATE")
             .requestMatchers("/api/recruiter/applications/**").hasRole("RECRUITER")
             .anyRequest().authenticated()
         )
