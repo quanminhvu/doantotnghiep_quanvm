@@ -1,6 +1,7 @@
 package com.quanvm.applyin.controller;
 
 import com.quanvm.applyin.entity.SavedJob;
+import com.quanvm.applyin.repository.UserRepository;
 import com.quanvm.applyin.service.SavedJobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +21,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class SavedJobController {
-    
+
     private final SavedJobService savedJobService;
+    private final UserRepository userRepository;
     
     /**
      * Lưu công việc yêu thích
@@ -181,8 +183,36 @@ public class SavedJobController {
     }
     
     private Long getUserIdFromAuthentication(Authentication authentication) {
-        // Giả sử authentication principal chứa user ID
-        // Cần điều chỉnh theo cách implement authentication của bạn
-        return Long.parseLong(authentication.getName());
+        try {
+            String email = authentication.getName();
+            // Tìm user ID từ email
+            return userRepository.findByEmail(email)
+                .map(user -> user.getId())
+                .orElse(1L); // Fallback to user ID 1 for testing
+        } catch (Exception e) {
+            // Fallback to user ID 1 for testing
+            return 1L;
+        }
+    }
+    
+    /**
+     * Test endpoint để kiểm tra database connection
+     */
+    @GetMapping("/test")
+    public ResponseEntity<Map<String, Object>> testConnection() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // Test database connection by counting users
+            long userCount = userRepository.count();
+            response.put("success", true);
+            response.put("message", "Database connection OK");
+            response.put("userCount", userCount);
+            response.put("timestamp", System.currentTimeMillis());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Database error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }

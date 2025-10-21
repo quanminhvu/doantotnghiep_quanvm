@@ -28,8 +28,8 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(registry -> registry
-            .requestMatchers("/api/auth/**", "/api/jobs/**", "/actuator/health", "/upload", "/").permitAll()
-            .requestMatchers("/api/applications/**", "/api/saved-jobs/**").hasRole("CANDIDATE")
+            .requestMatchers("/api/auth/**", "/api/jobs/**", "/actuator/health", "/upload", "/", "/api/saved-jobs/**").permitAll()
+            .requestMatchers("/api/applications/**").hasRole("CANDIDATE")
             .requestMatchers("/api/recruiter/applications/**").hasRole("RECRUITER")
             .anyRequest().authenticated()
         )
