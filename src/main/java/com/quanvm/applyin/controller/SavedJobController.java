@@ -1,5 +1,6 @@
 package com.quanvm.applyin.controller;
 
+import com.quanvm.applyin.dto.SavedJobResponse;
 import com.quanvm.applyin.entity.SavedJob;
 import com.quanvm.applyin.repository.UserRepository;
 import com.quanvm.applyin.service.SavedJobService;
@@ -118,8 +119,17 @@ public class SavedJobController {
             Pageable pageable = PageRequest.of(page, size);
             Page<SavedJob> savedJobs = savedJobService.getSavedJobs(userId, pageable);
             
+            // Convert to DTO to avoid serialization issues
+            List<SavedJobResponse> savedJobResponses = savedJobs.getContent().stream()
+                    .map(savedJob -> SavedJobResponse.builder()
+                            .id(savedJob.getId())
+                            .jobPosting(savedJob.getJobPosting())
+                            .savedAt(savedJob.getSavedAt())
+                            .build())
+                    .toList();
+            
             Map<String, Object> response = new HashMap<>();
-            response.put("savedJobs", savedJobs.getContent());
+            response.put("savedJobs", savedJobResponses);
             response.put("currentPage", savedJobs.getNumber());
             response.put("totalPages", savedJobs.getTotalPages());
             response.put("totalElements", savedJobs.getTotalElements());

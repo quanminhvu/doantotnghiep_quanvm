@@ -93,7 +93,30 @@ public class SavedJobService {
      * Lấy danh sách công việc đã lưu của user
      */
     public Page<SavedJob> getSavedJobs(Long userId, Pageable pageable) {
-        return savedJobRepository.findByUserIdWithJobPosting(userId, pageable);
+        Page<SavedJob> savedJobs = savedJobRepository.findByUserIdWithJobPosting(userId, pageable);
+        // Force eager loading để tránh lazy loading proxy
+        savedJobs.getContent().forEach(savedJob -> {
+            if (savedJob.getJobPosting() != null) {
+                savedJob.getJobPosting().getId();
+                savedJob.getJobPosting().getTitle();
+                savedJob.getJobPosting().getLocation();
+                savedJob.getJobPosting().getEmploymentType();
+                savedJob.getJobPosting().getDescription();
+                savedJob.getJobPosting().getRequirements();
+                savedJob.getJobPosting().getBenefits();
+                savedJob.getJobPosting().getSalaryMin();
+                savedJob.getJobPosting().getSalaryMax();
+                savedJob.getJobPosting().isActive();
+                savedJob.getJobPosting().getCompanyName();
+                savedJob.getJobPosting().getCompanyLogoUrl();
+                savedJob.getJobPosting().getCompanyAddress();
+                savedJob.getJobPosting().getCompanySize();
+                savedJob.getJobPosting().getCompanyWebsite();
+                savedJob.getJobPosting().getCreatedAt();
+                savedJob.getJobPosting().getUpdatedAt();
+            }
+        });
+        return savedJobs;
     }
     
     /**

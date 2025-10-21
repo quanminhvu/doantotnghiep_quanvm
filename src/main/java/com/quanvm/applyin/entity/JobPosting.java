@@ -1,5 +1,6 @@
 package com.quanvm.applyin.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import com.quanvm.applyin.util.ListToJsonStringConverter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class JobPosting {
 
   @Id
