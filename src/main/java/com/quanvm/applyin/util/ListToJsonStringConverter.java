@@ -19,7 +19,7 @@ public class ListToJsonStringConverter implements AttributeConverter<List<String
       if (attribute == null) return null;
       return mapper.writeValueAsString(attribute);
     } catch (Exception e) {
-      throw new IllegalArgumentException("Failed to write list as JSON", e);
+      throw new IllegalArgumentException("Failed to write list as JSONN", e);
     }
   }
 
