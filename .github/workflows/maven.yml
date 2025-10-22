@@ -2,7 +2,7 @@ name: CI/CD Spring Boot to Ubuntu
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   build-and-deploy:
